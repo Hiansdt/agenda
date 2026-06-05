@@ -1,6 +1,6 @@
 # Agenda de Contatos
 
-## Executação
+## Execução
 
 ## Requisitos
 
