@@ -1,0 +1,10 @@
+.agents
+.codex
+.config
+.git
+bin
+obj
+**/bin
+**/obj
+TestResults
+docker-compose.yml
