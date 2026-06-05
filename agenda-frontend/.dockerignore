@@ -1,0 +1,8 @@
+.agents
+.codex
+.git
+.next
+node_modules
+npm-debug.log*
+Dockerfile
+tsconfig.tsbuildinfo
