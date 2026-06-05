@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: agenda-postgres
+    environment:
+      POSTGRES_DB: agenda
+      POSTGRES_USER: agenda
+      POSTGRES_PASSWORD: agenda
+    ports:
+      - "5432:5432"
+    volumes:
+      - agenda-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agenda -d agenda"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./agenda-backend
+    container_name: agenda-backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5080
+      CLIENT_ORIGIN: http://localhost:3002
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=agenda;Username=agenda;Password=agenda
+    ports:
+      - "5080:5080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./agenda-frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:5080
+    container_name: agenda-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5080
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
+
+volumes:
+  agenda-postgres-data:
