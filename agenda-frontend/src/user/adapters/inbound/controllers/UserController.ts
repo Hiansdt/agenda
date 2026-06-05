@@ -12,16 +12,13 @@ import { RestoreSessionService } from "@/user/application/services/RestoreSessio
 import type { UserControllerState } from "@/user/application/ports/inbound/UserController";
 import { container } from "@/core/di/container";
 import { DI_TOKENS } from "@/core/di/tokens";
+import { showApiErrorToast } from "@/core/infra/api/apiErrorHandler";
 
 const userRepository = container.resolve<IUserRepository>(DI_TOKENS.AuthRepository);
 const loginService = new LoginService(userRepository);
 const registerService = new RegisterService(userRepository);
 const restoreSessionService = new RestoreSessionService(userRepository);
 const logoutService = new LogoutService(userRepository);
-
-function getErrorMessage(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
-}
 
 export const useUserController = create<UserControllerState>((set) => ({
   isAuthenticated: false,
@@ -38,8 +35,10 @@ export const useUserController = create<UserControllerState>((set) => ({
         status: "success",
       });
     } catch (error) {
+      const message = showApiErrorToast(error, "Não foi possível entrar.");
+
       set({
-        error: getErrorMessage(error, "Não foi possível entrar."),
+        error: message,
         isAuthenticated: false,
         status: "error",
       });
@@ -59,8 +58,10 @@ export const useUserController = create<UserControllerState>((set) => ({
         status: "success",
       });
     } catch (error) {
+      const message = showApiErrorToast(error, "Não foi possível criar a conta.");
+
       set({
-        error: getErrorMessage(error, "Não foi possível criar a conta."),
+        error: message,
         isAuthenticated: false,
         status: "error",
       });
@@ -96,8 +97,10 @@ export const useUserController = create<UserControllerState>((set) => ({
         status: "success",
       });
     } catch (error) {
+      const message = showApiErrorToast(error, "Não foi possível sair.");
+
       set({
-        error: getErrorMessage(error, "Não foi possível sair."),
+        error: message,
         status: "error",
       });
     }

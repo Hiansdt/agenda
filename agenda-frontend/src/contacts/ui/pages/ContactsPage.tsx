@@ -21,7 +21,6 @@ export function ContactsPage() {
     contacts,
     createContact,
     deleteContact,
-    error,
     listContacts,
     pagination,
     pagination: { page, pageSize },
@@ -133,9 +132,6 @@ export function ContactsPage() {
         </div>
       </div>
 
-      {error && !isModalOpen ? (
-        <p className="text-sm text-red-600">{error}</p>
-      ) : null}
       {isLoading ? (
         <p className="text-sm text-zinc-600">Carregando contatos...</p>
       ) : (
@@ -150,7 +146,6 @@ export function ContactsPage() {
 
       <ContactModal isOpen={isCreateOpen} onClose={closeModals}>
         <ContactForm
-          error={error}
           isSubmitting={isSubmitting}
           mode="create"
           onCancel={closeModals}
@@ -163,7 +158,6 @@ export function ContactsPage() {
           <ContactForm
             key={editingContact.id}
             contact={editingContact}
-            error={error}
             isSubmitting={isSubmitting}
             mode="edit"
             onCancel={closeModals}
@@ -176,7 +170,6 @@ export function ContactsPage() {
         {deletingContact ? (
           <ContactDeleteConfirmation
             contact={deletingContact}
-            error={error}
             isSubmitting={isSubmitting}
             onCancel={closeModals}
             onConfirm={submitDelete}

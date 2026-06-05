@@ -16,6 +16,7 @@ import type {
 import type { IContactRepository } from "@/contacts/application/ports/outbound/ContactRepository";
 import { container } from "@/core/di/container";
 import { DI_TOKENS } from "@/core/di/tokens";
+import { showApiErrorToast } from "@/core/infra/api/apiErrorHandler";
 
 const contactRepository = container.resolve<IContactRepository>(
   DI_TOKENS.ContactRepository,
@@ -32,10 +33,6 @@ const initialPagination: ContactPagination = {
   numPages: 1,
   total: 0,
 };
-
-function getErrorMessage(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
-}
 
 export const useContactController = create<ContactControllerState>(
   (set, get) => ({
@@ -69,8 +66,13 @@ export const useContactController = create<ContactControllerState>(
           status: "success",
         });
       } catch (error) {
+        const message = showApiErrorToast(
+          error,
+          "Não foi possível carregar os contatos.",
+        );
+
         set({
-          error: getErrorMessage(error, "Não foi possível carregar os contatos."),
+          error: message,
           status: "error",
         });
       }
@@ -83,8 +85,13 @@ export const useContactController = create<ContactControllerState>(
         const selectedContact = await getContactService.execute(input);
         set({ selectedContact, status: "success" });
       } catch (error) {
+        const message = showApiErrorToast(
+          error,
+          "Não foi possível carregar o contato.",
+        );
+
         set({
-          error: getErrorMessage(error, "Não foi possível carregar o contato."),
+          error: message,
           selectedContact: null,
           status: "error",
         });
@@ -99,8 +106,13 @@ export const useContactController = create<ContactControllerState>(
         set({ selectedContact: contact, status: "success" });
         await get().listContacts();
       } catch (error) {
+        const message = showApiErrorToast(
+          error,
+          "Não foi possível criar o contato.",
+        );
+
         set({
-          error: getErrorMessage(error, "Não foi possível criar o contato."),
+          error: message,
           status: "error",
         });
       }
@@ -113,8 +125,13 @@ export const useContactController = create<ContactControllerState>(
         set({ selectedContact: contact, status: "success" });
         await get().listContacts();
       } catch (error) {
+        const message = showApiErrorToast(
+          error,
+          "Não foi possível atualizar o contato.",
+        );
+
         set({
-          error: getErrorMessage(error, "Não foi possível atualizar o contato."),
+          error: message,
           status: "error",
         });
       }
@@ -133,8 +150,13 @@ export const useContactController = create<ContactControllerState>(
         }));
         await get().listContacts();
       } catch (error) {
+        const message = showApiErrorToast(
+          error,
+          "Não foi possível excluir o contato.",
+        );
+
         set({
-          error: getErrorMessage(error, "Não foi possível excluir o contato."),
+          error: message,
           status: "error",
         });
       }

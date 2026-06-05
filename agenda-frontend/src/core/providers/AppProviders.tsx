@@ -1,3 +1,7 @@
+"use client";
+
+import { ToastProvider } from "@heroui/react";
+
 import { AuthHydrator } from "@/user/ui/components/AuthHydrator";
 
 type AppProvidersProps = Readonly<{
@@ -8,6 +12,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <>
       <AuthHydrator />
+      <ToastProvider placement="top end" />
       {children}
     </>
   );

@@ -12,11 +12,27 @@ export function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { error, register, status } = useUserController();
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const { register, status } = useUserController();
   const isSubmitting = status === "loading";
 
   async function submit() {
-    await register({ name, email, password });
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+      setValidationError("Informe nome, email e senha.");
+      return;
+    }
+
+    setValidationError(null);
+
+    await register({
+      name: trimmedName,
+      email: trimmedEmail,
+      password: trimmedPassword,
+    });
 
     if (useUserController.getState().isAuthenticated) {
       router.push(APP_ROUTES.home);
@@ -34,6 +50,7 @@ export function RegisterPage() {
 
       <form
         className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
@@ -68,6 +85,9 @@ export function RegisterPage() {
             required
           />
         </label>
+        {validationError ? (
+          <p className="text-sm text-red-600">{validationError}</p>
+        ) : null}
         <button
           type="submit"
           className="h-10 w-full rounded-md bg-zinc-950 px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-zinc-400"
@@ -77,7 +97,6 @@ export function RegisterPage() {
         </button>
       </form>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <p className="text-sm text-zinc-600">
         Já tem uma conta?{" "}
         <Link href={APP_ROUTES.login} className="font-medium text-zinc-950">

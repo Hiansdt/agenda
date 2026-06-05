@@ -14,7 +14,6 @@ export type ContactFormValues = Readonly<{
 
 type ContactFormProps = Readonly<{
   contact?: Contact;
-  error: string | null;
   isSubmitting: boolean;
   mode: "create" | "edit";
   onCancel(): void;
@@ -29,7 +28,6 @@ function normalizeOptional(value: string) {
 
 export function ContactForm({
   contact,
-  error,
   isSubmitting,
   mode,
   onCancel,
@@ -51,9 +49,15 @@ export function ContactForm({
 
   async function submit() {
     const trimmedName = name.trim();
+    const trimmedPhone = phone.trim();
 
     if (!trimmedName) {
       setValidationError("Informe o nome do contato.");
+      return;
+    }
+
+    if (!trimmedPhone) {
+      setValidationError("Informe o telefone do contato.");
       return;
     }
 
@@ -62,7 +66,7 @@ export function ContactForm({
     await onSubmit({
       name: trimmedName,
       email: normalizeOptional(email),
-      phone: normalizeOptional(phone),
+      phone: trimmedPhone,
       address: normalizeOptional(address),
       observations: normalizeOptional(observations),
     });
@@ -79,6 +83,7 @@ export function ContactForm({
 
       <form
         className="space-y-4"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
@@ -109,6 +114,7 @@ export function ContactForm({
             onChange={(event) => setPhone(event.target.value)}
             type="tel"
             className="mt-1 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-950"
+            required
           />
         </label>
         <label className="block text-sm font-medium text-zinc-700">
@@ -131,7 +137,6 @@ export function ContactForm({
         {validationError ? (
           <p className="text-sm text-red-600">{validationError}</p>
         ) : null}
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button

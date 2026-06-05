@@ -77,7 +77,7 @@ npm run dev
 - Implementar pipeline CI/CD para deploy e testes automatizados;
 - Bloquear rota de documentação (swagger) caso seja tratado apenas como ferramenta de desenvolvimento;
 - Implementar integrações com APIs externas, como busca de endereço completo por CEP;
-- Implementar handling e visualização de erros da API através de toasts e indicações visuais no frontend;
+- Internacionalização na API para descrições de erro;
 
 ## Considerações finais
 

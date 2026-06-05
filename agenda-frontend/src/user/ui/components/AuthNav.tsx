@@ -8,8 +8,7 @@ import { useUserController } from "@/user/adapters/inbound/controllers/UserContr
 
 export function AuthNav() {
   const router = useRouter();
-  const { error, isAuthenticated, isHydrating, logout, status } =
-    useUserController();
+  const { isAuthenticated, isHydrating, logout, status } = useUserController();
   const isLoading = status === "loading";
 
   async function handleLogout() {
@@ -54,9 +53,6 @@ export function AuthNav() {
       >
         {isLoading ? "Saindo..." : "Sair"}
       </button>
-      {error ? (
-        <span className="hidden text-sm text-red-600 sm:inline">{error}</span>
-      ) : null}
     </div>
   );
 }

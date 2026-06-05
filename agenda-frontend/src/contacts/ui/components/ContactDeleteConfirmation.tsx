@@ -4,7 +4,6 @@ import type { Contact } from "@/contacts/domain/entities/Contact";
 
 type ContactDeleteConfirmationProps = Readonly<{
   contact: Contact;
-  error: string | null;
   isSubmitting: boolean;
   onCancel(): void;
   onConfirm(): Promise<void>;
@@ -12,7 +11,6 @@ type ContactDeleteConfirmationProps = Readonly<{
 
 export function ContactDeleteConfirmation({
   contact,
-  error,
   isSubmitting,
   onCancel,
   onConfirm,
@@ -28,8 +26,6 @@ export function ContactDeleteConfirmation({
           ação não pode ser desfeita.
         </p>
       </div>
-
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button

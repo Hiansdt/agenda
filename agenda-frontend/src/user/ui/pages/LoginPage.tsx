@@ -11,11 +11,22 @@ export function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { error, login, status } = useUserController();
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const { login, status } = useUserController();
   const isSubmitting = status === "loading";
 
   async function submit() {
-    await login({ email, password });
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
+      setValidationError("Informe email e senha.");
+      return;
+    }
+
+    setValidationError(null);
+
+    await login({ email: trimmedEmail, password: trimmedPassword });
 
     if (useUserController.getState().isAuthenticated) {
       router.push(APP_ROUTES.home);
@@ -33,6 +44,7 @@ export function LoginPage() {
 
       <form
         className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
@@ -58,6 +70,9 @@ export function LoginPage() {
             required
           />
         </label>
+        {validationError ? (
+          <p className="text-sm text-red-600">{validationError}</p>
+        ) : null}
         <button
           type="submit"
           className="h-10 w-full rounded-md bg-zinc-950 px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-zinc-400"
@@ -67,7 +82,6 @@ export function LoginPage() {
         </button>
       </form>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <p className="text-sm text-zinc-600">
         Precisa de uma conta?{" "}
         <Link href={APP_ROUTES.register} className="font-medium text-zinc-950">
